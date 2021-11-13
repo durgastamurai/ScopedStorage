@@ -7,8 +7,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.os.BuildCompat.isAtLeastQ
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -23,9 +25,19 @@ class MainActivity : AppCompatActivity() {
     private var mediaRecorder: MediaRecorder? = null
     var currentRecordingUri: Uri? = null //used in Q and above
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //access like this
+        val recordings = liveData<AudioModel> {
+            loadAllAudioRecordingsQ()?.forEach {
+                Log.d("durga", "onCreate: ${it.uri}")
+            }
+        }
+
+        //call prepareMediaRecorder() onStartRecording
     }
 
     /**
